@@ -5,11 +5,13 @@ public class Navio {
     private Integer id;
     private String descricao;
     private int capacidade;
+    private int capacidadeRestante;
 
     public Navio(Integer id, String descricao, int capacidade) {
         this.id = id;
         this.descricao = descricao;
         this.capacidade = capacidade;
+        this.capacidadeRestante = capacidade;
     }
 
     // Getters e Setters
@@ -37,6 +39,14 @@ public class Navio {
         this.capacidade = capacidade;
     }
 
+    public int getCapacidadeRestante() {
+        return capacidadeRestante;
+    }
+
+    public void setCapacidadeRestante(int capacidadeRestante) {
+        this.capacidadeRestante = capacidadeRestante;
+    }
+
     // toString (util para relatorios)
     @Override
     public String toString() {
@@ -44,6 +54,7 @@ public class Navio {
                 "id=" + id +
                 ", descricao='" + descricao + '\'' +
                 ", capacidade=" + capacidade +
+                ", capacidadeRestante=" + capacidadeRestante +
                 '}';
     }
 }

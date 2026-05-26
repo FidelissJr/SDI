@@ -109,13 +109,27 @@ public class Server implements IServico {
     // ================= EMBARQUE =================
 
     public double embarcar(String descricao) throws RemoteException {
-        int id = idEmbarque++;
-        Embarque embarque = new Embarque(id, null, null, descricao);
-        embarques.add(embarque);
+        if (cargas.isEmpty()) {
+            throw new RemoteException("Nenhuma carga disponível para embarque.");
+        }
 
-        System.out.println("Embarque realizado: " + descricao);
+        Carga carga = cargas.get(0);
 
-        return 100.0;
+        for (Navio navio : navios) {
+            if (navio.getCapacidadeRestante() >= carga.getVolume()) {
+                navio.setCapacidadeRestante(navio.getCapacidadeRestante() - carga.getVolume());
+
+                int id = idEmbarque++;
+                Embarque embarque = new Embarque(id, navio.getId(), carga.getId(), descricao);
+                embarques.add(embarque);
+                cargas.remove(0);
+
+                System.out.println("Embarque realizado: carga " + carga.getId() + " no navio " + navio.getId());
+                return carga.getVolume();
+            }
+        }
+
+        throw new RemoteException("Nenhum navio com espaço suficiente para a carga (volume: " + carga.getVolume() + ").");
     }
 
     public String relatorio_embarque() throws RemoteException {
