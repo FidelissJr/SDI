@@ -8,6 +8,7 @@ import java.util.*;
 import entities.Carga;
 import entities.Navio;
 import entities.Embarque;
+import porto.IServico;
 
 public class Server implements IServico {
 

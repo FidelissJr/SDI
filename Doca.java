@@ -1,5 +1,6 @@
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import porto.IServico;
 
 public class Doca {
 
@@ -41,13 +42,7 @@ public class Doca {
             System.out.println("\n--- RELATORIO CARGAS (APOS REMOCAO) ---");
             System.out.println(stub.relatorio_carga());
 
-            // ================= EMBARQUE =================
-            double valor = stub.embarcar("Embarque 1 - Navio B com milho");
-
-            System.out.println("\nValor do embarque: " + valor);
-
-            System.out.println("\n--- RELATORIO EMBARQUES ---");
-            System.out.println(stub.relatorio_embarque());
+            System.out.println("Dados prontos. Use o WS para embarcar (make wsclient).");
 
         } catch (Exception e) {
             e.printStackTrace();
