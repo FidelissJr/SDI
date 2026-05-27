@@ -13,6 +13,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import porto.IServico;
 
@@ -28,14 +29,15 @@ public class FilaConsumer {
     static final String FILA_CARGA    = "fila_carga";
     static final String FILA_EMBARQUE = "fila_embarque";
 
-    // Referência RMI compartilhada entre as threads
     private static IServico rmi;
+    private static long inicio;
+    private static AtomicInteger totalProcessadas = new AtomicInteger(0);
 
     public static void main(String[] args) throws Exception {
 
-        // Conecta ao servidor RMI (deve estar rodando: make server)
         Registry registry = LocateRegistry.getRegistry("localhost", 6600);
         rmi = (IServico) registry.lookup("Hello");
+        inicio = System.currentTimeMillis();
         System.out.println("Conectado ao servidor RMI.\n");
 
         // 1 thread por fila
@@ -75,16 +77,16 @@ public class FilaConsumer {
                         throws IOException {
 
                     String message = new String(body, "UTF-8");
-                    System.out.println("[" + tipo + "] Recebido: " + message);
+                    System.out.println(timestamp() + " [" + tipo + "] Recebido: " + message);
 
                     try {
                         processar(tipo, message);
-                        // ACK: confirma processamento com sucesso
+                        int n = totalProcessadas.incrementAndGet();
+                        System.out.println(timestamp() + " [" + tipo + "] Processado OK (" + n + " total)");
                         channel.basicAck(envelope.getDeliveryTag(), false);
 
                     } catch (Exception e) {
-                        System.err.println("[" + tipo + "] ERRO ao processar: " + e.getMessage());
-                        // NACK + requeue: devolve à fila para tentar de novo
+                        System.err.println(timestamp() + " [" + tipo + "] ERRO ao processar: " + e.getMessage());
                         channel.basicNack(envelope.getDeliveryTag(), false, true);
                     }
                 }
@@ -97,6 +99,13 @@ public class FilaConsumer {
             System.err.println("[" + tipo + "] Falha no consumidor: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private static String timestamp() {
+        long elapsed = System.currentTimeMillis() - inicio;
+        long seg = elapsed / 1000;
+        long ms  = elapsed % 1000;
+        return String.format("[%02d:%02d.%03d]", seg / 60, seg % 60, ms);
     }
 
     /**
