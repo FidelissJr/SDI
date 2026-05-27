@@ -42,7 +42,7 @@ public class Doca {
             System.out.println("\n--- RELATORIO CARGAS (APOS REMOCAO) ---");
             System.out.println(stub.relatorio_carga());
 
-            System.out.println("Dados prontos. Use o WS para embarcar (make wsclient).");
+            System.out.println("Dados prontos.");
 
         } catch (Exception e) {
             e.printStackTrace();
