@@ -115,22 +115,36 @@ public class Server implements IServico {
         }
 
         Carga carga = cargas.get(0);
+        Navio navio = encontrarMelhorNavio(carga);
+
+        navio.setCapacidadeRestante(navio.getCapacidadeRestante() - carga.getVolume());
+
+        int id = idEmbarque++;
+        Embarque embarque = new Embarque(id, navio.getId(), carga.getId(), descricao);
+        embarques.add(embarque);
+        cargas.remove(0);
+
+        System.out.println("Embarque realizado: carga " + carga.getId() + " no navio " + navio.getId());
+        return carga.getVolume();
+    }
+
+    // Best Fit: encontra o navio com menor espaço restante que ainda comporte a carga
+    private Navio encontrarMelhorNavio(Carga carga) throws RemoteException {
+        Navio melhor = null;
 
         for (Navio navio : navios) {
             if (navio.getCapacidadeRestante() >= carga.getVolume()) {
-                navio.setCapacidadeRestante(navio.getCapacidadeRestante() - carga.getVolume());
-
-                int id = idEmbarque++;
-                Embarque embarque = new Embarque(id, navio.getId(), carga.getId(), descricao);
-                embarques.add(embarque);
-                cargas.remove(0);
-
-                System.out.println("Embarque realizado: carga " + carga.getId() + " no navio " + navio.getId());
-                return carga.getVolume();
+                if (melhor == null || navio.getCapacidadeRestante() < melhor.getCapacidadeRestante()) {
+                    melhor = navio;
+                }
             }
         }
 
-        throw new RemoteException("Nenhum navio com espaço suficiente para a carga (volume: " + carga.getVolume() + ").");
+        if (melhor == null) {
+            throw new RemoteException("Nenhum navio com espaço suficiente para a carga (volume: " + carga.getVolume() + ").");
+        }
+
+        return melhor;
     }
 
     public String relatorio_embarque() throws RemoteException {
