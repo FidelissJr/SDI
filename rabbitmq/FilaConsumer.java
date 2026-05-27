@@ -78,6 +78,7 @@ public class FilaConsumer {
 
                     try {
                         processar(tipo, message);
+                        Thread.sleep(1000);
                         System.out.println(timestamp() + " [" + tipo + "] Processado OK");
                         channel.basicAck(envelope.getDeliveryTag(), false);
 

@@ -18,7 +18,6 @@ SOURCES = \
 	entities/Embarque.java \
 	porto/IServico.java \
 	Server.java \
-	Doca.java
 
 # Fontes RabbitMQ (dependem das classes acima)
 SOURCES_RABBIT = \
@@ -52,10 +51,6 @@ consumer:
 # Terminal 3: produtor — enfileira as requisições e encerra
 producer:
 	$(JAVA) -cp $(CP) rabbitmq.FilaProducer
-
-# Cliente RMI direto (para testes)
-client:
-	$(JAVA) -cp $(OUT) Doca
 
 # ----- LIMPEZA -----
 

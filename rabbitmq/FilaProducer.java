@@ -21,7 +21,7 @@ public class FilaProducer {
 
     public static void main(String[] argv) throws Exception {
 
-        int delayMs = 3000;
+        int delayMs = 500;
         if (argv.length > 0) {
             delayMs = Integer.parseInt(argv[0]);
         }
