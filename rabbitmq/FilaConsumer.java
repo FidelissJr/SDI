@@ -13,8 +13,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import porto.IServico;
 
 /**
@@ -31,7 +29,6 @@ public class FilaConsumer {
 
     private static IServico rmi;
     private static long inicio;
-    private static AtomicInteger totalProcessadas = new AtomicInteger(0);
 
     public static void main(String[] args) throws Exception {
 
@@ -81,8 +78,7 @@ public class FilaConsumer {
 
                     try {
                         processar(tipo, message);
-                        int n = totalProcessadas.incrementAndGet();
-                        System.out.println(timestamp() + " [" + tipo + "] Processado OK (" + n + " total)");
+                        System.out.println(timestamp() + " [" + tipo + "] Processado OK");
                         channel.basicAck(envelope.getDeliveryTag(), false);
 
                     } catch (Exception e) {
